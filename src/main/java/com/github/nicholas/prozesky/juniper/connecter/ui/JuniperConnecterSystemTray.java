@@ -22,7 +22,7 @@ public class JuniperConnecterSystemTray {
 	JuniperConnecterApplication application;
 	final Image CONNECTED_ICON = createIcon("vpn-connected.png");
 	final Image DISCONNECTED_ICON = createIcon("vpn-disconnected.png");
-	
+
 	final SystemTray tray;
 	final TrayIcon trayIcon;
 	final PopupMenu popupMenu;
@@ -73,8 +73,13 @@ public class JuniperConnecterSystemTray {
 	}
 
 	public void showMessage(String message) {
-		trayIcon.displayMessage("Info Message", message, TrayIcon.MessageType.INFO);		
+		trayIcon.displayMessage("Info Message", message, TrayIcon.MessageType.INFO);
 	}
+
+	public void hide() {
+		tray.remove(trayIcon);
+	}
+
 	public static boolean isSupported() {
 		return SystemTray.isSupported();
 	}

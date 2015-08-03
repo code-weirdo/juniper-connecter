@@ -6,6 +6,9 @@ import org.springframework.stereotype.Component;
 
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSystemTray;
 
+/**
+ * Serves at the entry point into the application.
+ */
 @Component
 public class JuniperConnecter {
 
@@ -15,7 +18,7 @@ public class JuniperConnecter {
 			System.out.println("Juniper Connecter is not supported on this machine, unfortunately.");
 			return;
 		}
-		ApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.github.nicholasprozesky.juniper.connecter");
+		ApplicationContext applicationContext = new AnnotationConfigApplicationContext("com.github.nicholas.prozesky.juniper.connecter");
 		applicationContext.getBean("juniperConnecter");
 	}
 

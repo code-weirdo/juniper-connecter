@@ -15,8 +15,16 @@ import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterAdminDi
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSettingsDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSystemTray;
+import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog.View;
 
+/**
+ * The application is made up of a number of views that get user input, a
+ * communicator that talks to the Juniper VPN web site to log the user in and a
+ * process runner that launches and monitors the "network connect" application
+ * provided by Juniper. These components feed events back into this
+ * "application" which coordinates what they should do.
+ */
 @Component
 public class JuniperConnecterApplication {
 
@@ -78,7 +86,12 @@ public class JuniperConnecterApplication {
 		switch (event) {
 		// SYSTEM TRAY
 		case EVENT_EXIT:
-			System.exit(0);
+			ncuiRunner.terminate();
+			systemTray.hide();
+			new Thread(() -> {
+				ThreadUtils.sleep(5000);
+				System.exit(0);
+			}).start();
 			break;
 		case EVENT_TRAY_SETTINGS:
 			settingsDialog.makeVisible();
@@ -111,7 +124,7 @@ public class JuniperConnecterApplication {
 		case EVENT_COMMUNICATOR_TIMEOUT:
 			break;
 		case EVENT_COMMUNICATOR_INVALID_URL:
-			systemTray.showMessage("Could not connect...");
+			systemTray.showMessage("Could not connect");
 			SwingUtilities.invokeLater(() -> connectDialog.setVisible(false));
 			break;
 		case EVENT_COMMUNICATOR_LOGIN:
@@ -127,6 +140,11 @@ public class JuniperConnecterApplication {
 			String dsid = communicater.getDSID();
 			ncuiRunner.setDsid(dsid);
 			adminDialog.makeVisible();
+			break;
+		case EVENT_COMMINICATOR_INVALID_USERNAME_PASSWORD:
+			systemTray.showMessage("Invalid username or password");
+			SwingUtilities.invokeLater(() -> connectDialog.setVisible(false));
+			communicater.disconnect();
 			break;
 		// ADMIN
 		case EVENT_ADMIN_OKAY:

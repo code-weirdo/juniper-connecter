@@ -11,9 +11,6 @@ public class SystemCommandRunner {
 	private PrintWriter prompt;
 	private int exitCode = -1;
 
-	public SystemCommandRunner() {
-	}
-
 	public void execute(List<String> commands) {
 		ProcessBuilder processBuilder = new ProcessBuilder().command(commands);
 		try {
@@ -40,10 +37,7 @@ public class SystemCommandRunner {
 
 	public void terminate() {
 		if (isRunning()) {
-			inputStreamHandler.closeStream();
-			errorStreamHandler.closeStream();
-			prompt.close();
-			process.destroy();
+			process.destroyForcibly();
 		}
 	}
 
@@ -69,6 +63,7 @@ public class SystemCommandRunner {
 		try {
 			streamHandler.interrupt();
 			streamHandler.join();
+			streamHandler.closeStream();
 		} catch (InterruptedException exception) {
 			throw new RuntimeException("InterruptedException when trying to close SystemStreamHandler");
 		}

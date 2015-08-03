@@ -23,7 +23,6 @@ public class SystemStreamHandler extends Thread {
 				System.out.println(type + "> " + line);
 			}
 		} catch (IOException ioException) {
-			ioException.printStackTrace();
 		}
 	}
 

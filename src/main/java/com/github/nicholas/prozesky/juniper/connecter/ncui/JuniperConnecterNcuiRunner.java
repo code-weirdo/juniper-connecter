@@ -12,6 +12,12 @@ import com.github.nicholas.prozesky.juniper.connecter.app.JuniperConnecterEvent;
 import com.github.nicholas.prozesky.juniper.connecter.settings.JuniperConnecterSettings;
 import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
 
+/**
+ * The runner is the component launches and monitors the network connect
+ * process. Network Connect is the client application that Juniper provides. To
+ * make this work, we need a DSID that we've fetched by logging into the VPN web
+ * site.
+ */
 @Component
 public class JuniperConnecterNcuiRunner {
 
