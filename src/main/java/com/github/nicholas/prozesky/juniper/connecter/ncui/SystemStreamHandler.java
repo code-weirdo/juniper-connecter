@@ -1,17 +1,20 @@
 package com.github.nicholas.prozesky.juniper.connecter.ncui;
 
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SystemStreamHandler extends Thread {
 	InputStream inputStream;
-	String type;
+	List<String> streamOutput = new LinkedList<>();
 
-	public SystemStreamHandler(InputStream inputStream, String type) {
+	public SystemStreamHandler(InputStream inputStream) {
 		this.inputStream = inputStream;
-		this.type = type;
 	}
 
 	@Override
@@ -20,10 +23,17 @@ public class SystemStreamHandler extends Thread {
 		try (BufferedReader reader = new BufferedReader(streamReader)) {
 			String line = null;
 			while ((line = reader.readLine()) != null) {
-				System.out.println(type + "> " + line);
+				streamOutput.add(line);
 			}
 		} catch (IOException ioException) {
 		}
+	}
+
+	public List<String> getStreamOutput() {
+		List<String> result = streamOutput.stream() //
+				.map(line -> new String(line)) //
+				.collect(Collectors.toList());
+		return result;
 	}
 
 	public void closeStream() {

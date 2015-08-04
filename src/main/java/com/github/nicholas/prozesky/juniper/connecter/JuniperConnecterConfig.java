@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Scope;
 
 import com.github.nicholas.prozesky.juniper.connecter.app.JuniperConnecterApplication;
 import com.github.nicholas.prozesky.juniper.connecter.comms.JuniperConnecterCommunicater;
+import com.github.nicholas.prozesky.juniper.connecter.ncui.JuniperConnecterNcsvcRunner;
 import com.github.nicholas.prozesky.juniper.connecter.ncui.JuniperConnecterNcuiRunner;
 import com.github.nicholas.prozesky.juniper.connecter.settings.JuniperConnecterSettings;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterAdminDialog;
@@ -57,6 +58,12 @@ public class JuniperConnecterConfig {
 	@Scope("singleton")
 	public JuniperConnecterNcuiRunner ncuiRunner() {
 		return new JuniperConnecterNcuiRunner();
+	}
+
+	@Bean
+	@Scope("singleton")
+	public JuniperConnecterNcsvcRunner ncsvcRunner() {
+		return new JuniperConnecterNcsvcRunner();
 	}
 
 	@Bean

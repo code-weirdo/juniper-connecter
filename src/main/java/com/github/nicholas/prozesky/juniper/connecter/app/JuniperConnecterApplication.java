@@ -9,14 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.github.nicholas.prozesky.juniper.connecter.comms.JuniperConnecterCommunicater;
+import com.github.nicholas.prozesky.juniper.connecter.ncui.JuniperConnecterNcsvcRunner;
 import com.github.nicholas.prozesky.juniper.connecter.ncui.JuniperConnecterNcuiRunner;
 import com.github.nicholas.prozesky.juniper.connecter.settings.JuniperConnecterSettings;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterAdminDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog;
+import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog.View;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSettingsDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSystemTray;
 import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
-import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog.View;
 
 /**
  * The application is made up of a number of views that get user input, a
@@ -35,6 +36,7 @@ public class JuniperConnecterApplication {
 	private JuniperConnecterAdminDialog adminDialog;
 	private JuniperConnecterCommunicater communicater;
 	private JuniperConnecterNcuiRunner ncuiRunner;
+	private JuniperConnecterNcsvcRunner ncsvcRunner;
 
 	@Autowired
 	public void setSettings(JuniperConnecterSettings settings) {
@@ -78,6 +80,11 @@ public class JuniperConnecterApplication {
 		this.ncuiRunner.setApplication(this);
 	}
 
+	@Autowired
+	public void setNcsvcRunner(JuniperConnecterNcsvcRunner ncsvcRunner) {
+		this.ncsvcRunner = ncsvcRunner;
+	}
+
 	public JuniperConnecterSettings getSettings() {
 		return settings;
 	}
@@ -86,8 +93,9 @@ public class JuniperConnecterApplication {
 		switch (event) {
 		// SYSTEM TRAY
 		case EVENT_EXIT:
-			ncuiRunner.terminate();
 			systemTray.hide();
+			ncuiRunner.terminate();
+			ncsvcRunner.terminateIfRunning();
 			new Thread(() -> {
 				ThreadUtils.sleep(5000);
 				System.exit(0);
@@ -149,6 +157,7 @@ public class JuniperConnecterApplication {
 		// ADMIN
 		case EVENT_ADMIN_OKAY:
 			String adminPassword = adminDialog.getPassword();
+			ncsvcRunner.startNcsvcIfNotRunning(adminPassword);
 			ncuiRunner.startNcui(adminPassword);
 			break;
 		case EVENT_ADMIN_CANCELED:

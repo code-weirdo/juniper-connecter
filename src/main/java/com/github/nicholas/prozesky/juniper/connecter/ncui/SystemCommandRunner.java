@@ -3,6 +3,8 @@ package com.github.nicholas.prozesky.juniper.connecter.ncui;
 import java.io.PrintWriter;
 import java.util.List;
 
+import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
+
 public class SystemCommandRunner {
 
 	private Process process;
@@ -15,8 +17,8 @@ public class SystemCommandRunner {
 		ProcessBuilder processBuilder = new ProcessBuilder().command(commands);
 		try {
 			process = processBuilder.start();
-			inputStreamHandler = new SystemStreamHandler(process.getInputStream(), "stdio");
-			errorStreamHandler = new SystemStreamHandler(process.getErrorStream(), "stderr");
+			inputStreamHandler = new SystemStreamHandler(process.getInputStream());
+			errorStreamHandler = new SystemStreamHandler(process.getErrorStream());
 			prompt = new PrintWriter(process.getOutputStream());
 			startStreamHandlers();
 			new Thread(() -> {
@@ -33,6 +35,20 @@ public class SystemCommandRunner {
 		} catch (Exception exception) {
 			throw new RuntimeException();
 		}
+	}
+
+	public void waitFor() {
+		while (isRunning()) {
+			ThreadUtils.sleep(100);
+		}
+	}
+
+	public List<String> getErrorStreamOutput() {
+		return errorStreamHandler.getStreamOutput();
+	}
+
+	public List<String> getInputStreamOutput() {
+		return inputStreamHandler.getStreamOutput();
 	}
 
 	public void terminate() {
