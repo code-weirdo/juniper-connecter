@@ -81,29 +81,27 @@ public class JuniperConnecterConnectDialog extends JDialog {
 	}
 
 	public void makeVisible(View view) {
-		SwingUtilities.invokeLater(() -> {
-			connectingPanel.setVisible(view == View.CONNECTING);
-			loginPanel.setVisible(view == View.LOGIN);
-			oneTimePinPanel.setVisible(view == View.ONE_TIME_PIN);
-			switch (view) {
-			case CONNECTING:
-				setSize(300, 55);
-				url.setText("https://" + settings.get("host"));
-				getRootPane().setDefaultButton(null);
-				break;
-			case LOGIN:
-				password.setText("");
-				setSize(300, 115);
-				getRootPane().setDefaultButton(okayButton);
-				break;
-			case ONE_TIME_PIN:
-				oneTimePin.setText("");
-				setSize(300, 60);
-				getRootPane().setDefaultButton(oneTimePinOkayButton);
-				break;
-			}
-			setVisible(true);
-		});
+		connectingPanel.setVisible(view == View.CONNECTING);
+		loginPanel.setVisible(view == View.LOGIN);
+		oneTimePinPanel.setVisible(view == View.ONE_TIME_PIN);
+		switch (view) {
+		case CONNECTING:
+			setSize(300, 55);
+			url.setText("https://" + settings.get("host"));
+			getRootPane().setDefaultButton(null);
+			break;
+		case LOGIN:
+			password.setText("");
+			setSize(300, 115);
+			getRootPane().setDefaultButton(okayButton);
+			break;
+		case ONE_TIME_PIN:
+			oneTimePin.setText("");
+			setSize(300, 60);
+			getRootPane().setDefaultButton(oneTimePinOkayButton);
+			break;
+		}
+		setVisible(true);
 	}
 
 	public void setRealms(List<String> realms) {

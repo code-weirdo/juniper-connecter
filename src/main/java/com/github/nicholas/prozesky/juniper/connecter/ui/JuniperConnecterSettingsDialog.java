@@ -91,6 +91,7 @@ public class JuniperConnecterSettingsDialog extends JDialog {
 	private void cancelEvent(ActionEvent event) {
 		host.setText(settings.get("host"));
 		setVisible(false);
+		setSize(300, 60);
 	}
 	
 	private class InternalDocumentListener implements DocumentListener {

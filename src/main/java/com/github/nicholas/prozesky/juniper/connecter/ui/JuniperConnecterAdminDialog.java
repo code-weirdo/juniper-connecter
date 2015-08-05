@@ -62,10 +62,9 @@ public class JuniperConnecterAdminDialog extends JDialog {
 	}
 
 	public void makeVisible() {
-		SwingUtilities.invokeLater(() -> {
-			password.setText("");
-			setVisible(true);
-		});
+		password.setText("");
+		setSize(300, 60);
+		setVisible(true);
 	}
 
 	public String getPassword() {
