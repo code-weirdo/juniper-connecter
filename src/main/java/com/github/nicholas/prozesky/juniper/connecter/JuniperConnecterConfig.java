@@ -13,6 +13,7 @@ import com.github.nicholas.prozesky.juniper.connecter.ncui.JuniperConnecterNcuiR
 import com.github.nicholas.prozesky.juniper.connecter.settings.JuniperConnecterSettings;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterAdminDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog;
+import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSessionDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSettingsDialog;
 
 @Configuration
@@ -46,6 +47,12 @@ public class JuniperConnecterConfig {
 	@Scope("singleton")
 	public JuniperConnecterAdminDialog adminDialog() {
 		return new JuniperConnecterAdminDialog();
+	}
+
+	@Bean
+	@Scope("singleton")
+	public JuniperConnecterSessionDialog sessionDialog() {
+		return new JuniperConnecterSessionDialog();
 	}
 
 	@Bean

@@ -31,7 +31,6 @@ public class JuniperConnecterNcsvcRunner {
 		List<String> output = commandRunner.getInputStreamOutput();
 		List<String> process = output.stream() //
 				.filter(line -> {
-					System.out.println(line);
 					return !(line.contains("grep") || line.contains("sudo"));
 				}) //
 				.collect(Collectors.toList());

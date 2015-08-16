@@ -29,6 +29,7 @@ public class JuniperConnecterSystemTray {
 	MenuItem connectItem;
 	MenuItem disconnectItem;
 	MenuItem settingsItem;
+	MenuItem sessionItem;
 	MenuItem exitItem;
 
 	public JuniperConnecterSystemTray() {
@@ -37,6 +38,9 @@ public class JuniperConnecterSystemTray {
 		disconnectItem = new MenuItem("Disconnect");
 		disconnectItem.addActionListener(e -> fireEvent(JuniperConnecterEvent.EVENT_TRAY_DISCONNECT));
 		disconnectItem.setEnabled(false);
+		sessionItem = new MenuItem("Session Info");
+		sessionItem.addActionListener(e -> fireEvent(JuniperConnecterEvent.EVENT_TRAY_SESSION));
+		sessionItem.setEnabled(false);
 		settingsItem = new MenuItem("Settings");
 		settingsItem.addActionListener(e -> fireEvent(JuniperConnecterEvent.EVENT_TRAY_SETTINGS));
 		exitItem = new MenuItem("Exit");
@@ -45,6 +49,7 @@ public class JuniperConnecterSystemTray {
 		this.popupMenu = new PopupMenu();
 		popupMenu.add(connectItem);
 		popupMenu.add(disconnectItem);
+		popupMenu.add(sessionItem);
 		popupMenu.add(settingsItem);
 		popupMenu.addSeparator();
 		popupMenu.add(exitItem);
@@ -70,6 +75,10 @@ public class JuniperConnecterSystemTray {
 			disconnectItem.setEnabled(connected);
 			trayIcon.setImage(connected ? CONNECTED_ICON : DISCONNECTED_ICON);
 		});
+	}
+
+	public void enableSessionInfo() {
+		sessionItem.setEnabled(true);
 	}
 
 	public void showMessage(String message) {

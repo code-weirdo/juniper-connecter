@@ -15,6 +15,7 @@ import com.github.nicholas.prozesky.juniper.connecter.settings.JuniperConnecterS
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterAdminDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterConnectDialog.View;
+import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSessionDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSettingsDialog;
 import com.github.nicholas.prozesky.juniper.connecter.ui.JuniperConnecterSystemTray;
 import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
@@ -24,7 +25,7 @@ import com.github.nicholas.prozesky.juniper.connecter.utils.ThreadUtils;
  * communicator that talks to the Juniper VPN web site to log the user in and a
  * process runner that launches and monitors the "network connect" application
  * provided by Juniper. These components feed events back into this
- * "application" which coordinates what they should do.
+ * application which coordinates what they should do.
  */
 @Component
 public class JuniperConnecterApplication {
@@ -34,6 +35,7 @@ public class JuniperConnecterApplication {
 	private JuniperConnecterSettingsDialog settingsDialog;
 	private JuniperConnecterConnectDialog connectDialog;
 	private JuniperConnecterAdminDialog adminDialog;
+	private JuniperConnecterSessionDialog sessionDialog;
 	private JuniperConnecterCommunicater communicater;
 	private JuniperConnecterNcuiRunner ncuiRunner;
 	private JuniperConnecterNcsvcRunner ncsvcRunner;
@@ -66,6 +68,12 @@ public class JuniperConnecterApplication {
 	public void setAdminDialog(JuniperConnecterAdminDialog adminDialog) {
 		this.adminDialog = adminDialog;
 		this.adminDialog.setApplication(this);
+	}
+
+	@Autowired
+	public void setSessionDialog(JuniperConnecterSessionDialog sessionDialog) {
+		this.sessionDialog = sessionDialog;
+		this.sessionDialog.setApplication(this);
 	}
 
 	@Autowired
@@ -110,11 +118,14 @@ public class JuniperConnecterApplication {
 		case EVENT_TRAY_DISCONNECT:
 			ncuiRunner.terminate();
 			break;
+		case EVENT_TRAY_SESSION:
+			sessionDialog.makeVisible();
+			break;
 		// SETTINGS DIALOG
 		case EVENT_HOST_SETTINGS_UPDATED:
 			settings.save();
 			break;
-		// EVENT DIALOG
+		// CONNECT DIALOG
 		case EVENT_CONNECT_OKAY:
 			loginInBackground();
 			break;
@@ -127,6 +138,9 @@ public class JuniperConnecterApplication {
 			break;
 		case EVENT_CONNECT_ONE_TIME_PIN_CANCELED:
 			communicater.disconnect();
+			break;
+		// SESSION DIALOG
+		case EVENT_SESSION_CLOSE:
 			break;
 		// COMMUNICATER
 		case EVENT_COMMUNICATOR_TIMEOUT:
@@ -148,6 +162,8 @@ public class JuniperConnecterApplication {
 			String dsid = communicater.getDSID();
 			ncuiRunner.setDsid(dsid);
 			adminDialog.makeVisible();
+			sessionDialog.setDsid(dsid);
+			systemTray.enableSessionInfo();
 			break;
 		case EVENT_COMMINICATOR_INVALID_USERNAME_PASSWORD:
 			systemTray.showMessage("Invalid username or password");
